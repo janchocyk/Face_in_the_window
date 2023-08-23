@@ -25,6 +25,7 @@ This is a Python script that implements a simple face detection game using OpenC
 5. Run the script:
 
    ```cd aplication```
+   
    ```python main.py```
    
 7. Play the game:
