@@ -14,17 +14,18 @@ This is a Python script that implements a simple face detection game using OpenC
 
 1. Clone this repository (on Command Prompt or Bash):
    
-```git clone <repository_url>```
+   ```git clone <repository_url>```
 
-```cd <repository_name>```
+   ```cd <repository_name>```
    
 3. Install requirement librarys (on Command Prompt or Bash):
 
-```pip install -r requirements.txt```
+   ```pip install -r requirements.txt```
 
 5. Run the script:
 
-```python main.py```
+   ```cd aplication```
+   ```python main.py```
    
 7. Play the game:
 - The game will display rectangles on the video stream. You need to identify whether a face is present within each rectangle.
