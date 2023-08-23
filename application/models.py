@@ -1,15 +1,15 @@
 import cv2
 import numpy as np
 
-# # Ścieżka do pliku z modelem prototxt
-# prototxt_path = "ModelRes10/deploy.prototxt.txt"
-# # Ścieżka do wagi modelu
-# model_path = "ModelRes10/res10_300x300_ssd_iter_140000.caffemodel"
+from application.games import GREEN
+
+
 
 class Res10():
 
-    def __init__(self):
+    def __init__(self, confidence=0.7):
         self.model = cv2.dnn.readNetFromCaffe("ModelRes10/deploy.prototxt.txt", "ModelRes10/res10_300x300_ssd_iter_140000.caffemodel")
+        self.confidence = confidence
 
     def detection(self, image):
         # Przygotowanie obrazu do analizy (normalizacja, skalowanie)
@@ -24,12 +24,12 @@ class Res10():
             confidence = detections[0, 0, i, 2]
 
             # Sprawdzanie, czy pewność jest wystarczająco wysoka
-            if confidence > 0.6:
+            if confidence > self.confidence:
                 # Pobieranie współrzędnych bounding box
                 box = detections[0, 0, i, 3:7] * np.array([image.shape[1], image.shape[0], image.shape[1], image.shape[0]])
                 (startX, startY, endX, endY) = box.astype("int")
                 # Narysowanie prostokątu wokół twarzy
-                cv2.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 3)
+                cv2.rectangle(image, (startX, startY), (endX, endY), GREEN, 3)
                 confidences.append(confidence)
                 if confidence == max(confidences):
                     face = (startX, startY, endX, endY)
@@ -47,6 +47,6 @@ class CascadeClassifier():
         faces = self.model.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
         if len(faces) != 0:
             startX, startY, endX, endY = faces
-            cv2.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 3)
+            cv2.rectangle(image, (startX, startY), (endX, endY), GREEN, 3)
 
         return faces, image
