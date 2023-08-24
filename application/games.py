@@ -17,7 +17,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 def detect_and_check(cropped_frame: np.ndarray, incorrect_count: int, correct_count: int, model) -> tuple[int, int]:
-    faces, image = model.detection(cropped_frame)
+    faces, image = model.detect(cropped_frame)
     if len(faces) == 0:
         incorrect_count += 1
     else:
