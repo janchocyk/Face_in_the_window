@@ -4,3 +4,4 @@ numpy>=1.18.5
 opencv-python==4.5.4.60
 pandas
 tensorflow
+ultralytics

@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+from ultralytics import YOLO
 
-from application.games import GREEN
-
-
+GREEN = (0, 255, 0)
 
 class Res10():
 
@@ -29,12 +28,21 @@ class Res10():
                 # Pobieranie współrzędnych bounding box
                 box = detections[0, 0, i, 3:7] * np.array([image.shape[1], image.shape[0], image.shape[1], image.shape[0]])
                 (startX, startY, endX, endY) = box.astype("int")
-                # Narysowanie prostokątu wokół twarzy
-                cv2.rectangle(image, (startX, startY), (endX, endY), GREEN, 3)
+                faces.append((startX, startY, endX, endY))
+                # # Narysowanie prostokątu wokół twarzy
+                # cv2.rectangle(image, (startX, startY), (endX, endY), GREEN, 3)
                 confidences.append(confidence)
-                if confidence == max(confidences):
-                    face = (startX, startY, endX, endY)
-                    faces.insert(0, face)
+                # if confidence == max(confidences):
+                #     face = (startX, startY, endX, endY)
+                #     faces.insert(0, face)
+        if faces:
+            max_confidence = max(confidences)
+            best_face_idx = confidences.index(max_confidence)
+            best_face = faces[best_face_idx]
+            faces = [best_face]
+            startX, startY, endX, endY = best_face
+            cv2.rectangle(image, (startX, startY), (endX, endY), GREEN, 3)
+
         return faces, image
 
 
@@ -53,16 +61,38 @@ class CascadeClassifier():
         return faces, image
 
 
+class YOLOv8():
+    def __init__(self):
+        self.model = YOLO('YOLO_v8/best.pt')
+
+    def detect(self, image):
+        results = self.model(image, conf=0.3)
+
+        boxes = results[0].boxes
+        faces = []
+        for box in boxes:
+            startX = int(box.xyxy.tolist()[0][0])
+            startY = int(box.xyxy.tolist()[0][1])
+            endX = int(box.xyxy.tolist()[0][2])
+            endY = int(box.xyxy.tolist()[0][3])
+            cv2.rectangle(image, (startX, startY), (endX, endY), GREEN, 3)
+            faces = [(startX, startY, endX, endY)]
+        return faces, image
+
+
+
 class Own_model():
     def __init__(self):
         self.model = tf.keras.models.load_model('filepath_to_model_to_add_in_feature')
 
     def detect(self, image):
-        result = self.model.predict(image)
-        ...
-        if result == 'human_face':
-            (startX, startY, endX, endY) = (0, 0, 200, 250)
-            # Narysowanie prostokątu wokół twarzy
+        classes = ['face', 'not_face']
+        image_array = tf.expand_dims(image, 0)
+        predictions = self.model.predict(image_array)
+        predicted_class_index = tf.argmax(predictions[0])
+        predicted_class_name = classes[predicted_class_index]
+        if predicted_class_name == 'face':
+            (startX, startY, endX, endY) = (5, 5, 195, 245)
             cv2.rectangle(image, (startX, startY), (endX, endY), GREEN, 3)
             faces = [(startX, startY, endX, endY)]
         else:
