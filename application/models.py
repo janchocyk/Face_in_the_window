@@ -80,14 +80,14 @@ class YOLOv8():
         return faces, image
 
 
-
 class Own_model():
     def __init__(self):
-        self.model = tf.keras.models.load_model('filepath_to_model_to_add_in_feature')
+        self.model = tf.keras.models.load_model('C:\\Users\\Dell\\PycharmProjects\\project_face_in_window\\application\\Own_model')
 
     def detect(self, image):
         classes = ['face', 'not_face']
-        image_array = tf.expand_dims(image, 0)
+        image_array = cv2.resize(image, (224, 224))
+        image_array = tf.expand_dims(image_array, 0)
         predictions = self.model.predict(image_array)
         predicted_class_index = tf.argmax(predictions[0])
         predicted_class_name = classes[predicted_class_index]
