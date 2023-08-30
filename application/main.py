@@ -5,95 +5,88 @@ import tkinter as tk
 from models import Res10, CascadeClassifier, YOLOv8, Own_model
 from games import play_1, play_2, SCREEN_HEIGHT, SCREEN_WIDTH, RECT_HEIGHT, RECT_WIDTH, RED, BLACK, WHITE
 
+def set_the_game() -> tuple[str, int, int]:
+    """
+    Initial game settings.
 
-game_variant = 1
-difficult_level = 1
-
-
-def set_the_game():
-    global game_variant, difficult_level
-
+    Returns:
+        Tuple[str, int, int]: A tuple containing player's name, game variant, and difficulty level.
+    """
+    game_variant = 1
+    difficulty_level = 1
 
     def clear_frame(frame):
         for widget in frame.winfo_children():
             widget.destroy()
 
-
     def create_game1_frame():
         game2_frame.pack_forget()
         game1_frame.pack()
-        difficult1_level_label = tk.Label(game1_frame, text="Ustaw poziom trudności:")
-        # Tworzenie trzech radio buttonów
+        difficulty1_level_label = tk.Label(game1_frame, text="Set difficulty level:")
+        # Creating three radio buttons
         radio1_button1 = tk.Radiobutton(game1_frame, text="Easy", variable=selected_option1, value=1, command=update_difficulty1)
         radio1_button2 = tk.Radiobutton(game1_frame, text="Medium", variable=selected_option1, value=2, command=update_difficulty1)
         radio1_button3 = tk.Radiobutton(game1_frame, text="Hard", variable=selected_option1, value=3, command=update_difficulty1)
         selected_option1.set(None)
-        difficult1_level_label.pack()
+        difficulty1_level_label.pack()
         radio1_button1.pack()
         radio1_button2.pack()
         radio1_button3.pack()
 
-
     def create_game2_frame():
         game1_frame.pack_forget()
         game2_frame.pack()
-        difficult2_level_label = tk.Label(game2_frame, text="Ustaw wielkość ramek:")
-        # Tworzenie trzech radio buttonów
-        radio2_button1 = tk.Radiobutton(game2_frame, text="Small", variable=selected_option2, value=1, command=update_difficulty2)
-        radio2_button2 = tk.Radiobutton(game2_frame, text="Normal", variable=selected_option2, value=2, command=update_difficulty2)
+        difficulty2_level_label = tk.Label(game2_frame, text="Set frame size:")
+        # Creating three radio buttons
+        radio2_button1 = tk.Radiobutton(game2_frame, text="Normal", variable=selected_option2, value=1, command=update_difficulty2)
+        radio2_button2 = tk.Radiobutton(game2_frame, text="Small", variable=selected_option2, value=2, command=update_difficulty2)
         selected_option2.set(None)
-        difficult2_level_label.pack()
+        difficulty2_level_label.pack()
         radio2_button1.pack()
         radio2_button2.pack()
 
-
     def game1_button_callback():
-        global game_variant
+        nonlocal game_variant
         game_variant = 1
         game1_button.config(state=tk.DISABLED)
         game2_button.config(state=tk.NORMAL)
         clear_frame(game2_frame)
         create_game1_frame()
 
-
     def game2_button_callback():
-        global game_variant
+        nonlocal game_variant
         game_variant = 2
         game2_button.config(state=tk.DISABLED)
         game1_button.config(state=tk.NORMAL)
         clear_frame(game1_frame)
         create_game2_frame()
 
-
     def update_difficulty1():
-        global difficult_level
-        difficult_level = selected_option1.get()
-
+        nonlocal difficulty_level
+        difficulty_level = selected_option1.get()
 
     def update_difficulty2():
-        global difficult_level
-        difficult_level = selected_option2.get()
-
+        nonlocal difficulty_level
+        difficulty_level = selected_option2.get()
 
     def confirm_button_callback():
         root.quit()
 
-
-    root = tk.Tk()  # Tworzenie głównego okna
+    root = tk.Tk()  # Creating the main window
     selected_option1 = tk.StringVar(value=None)
     selected_option2 = tk.StringVar(value=None)
 
-    root.title("Ustawienia Gry")
+    root.title("Game Settings")
 
-    welcome_label = tk.Label(root, text="Witaj w grze!")
-    instructions_label = tk.Label(root, text="Wybierz wariant gry i wpisz swoje imię (opcjonalnie).")
+    welcome_label = tk.Label(root, text="Welcome to the game!")
+    instructions_label = tk.Label(root, text="Choose the game variant and enter your name (optional).")
     welcome_label.pack()
     instructions_label.pack()
 
-    main_frame = tk.Frame(root)  # Tworzenie głównej ramki
+    main_frame = tk.Frame(root)  # Creating the main frame
 
     name_frame = tk.Frame(main_frame)
-    name_label = tk.Label(name_frame, text="Wpisz swoje imię:")
+    name_label = tk.Label(name_frame, text="Enter your name:")
     name_entry = tk.Entry(name_frame)
     name_label.pack()
     name_entry.pack()
@@ -101,9 +94,9 @@ def set_the_game():
 
     game_variant_frame = tk.Frame(main_frame)
 
-    game_variants = tk.Label(game_variant_frame, text="Wybierz rozgrywkę:")
-    game1_button = tk.Button(game_variant_frame, text="Gra 1", command=game1_button_callback)
-    game2_button = tk.Button(game_variant_frame, text="Gra 2", command=game2_button_callback)
+    game_variants = tk.Label(game_variant_frame, text="Choose the game mode:")
+    game1_button = tk.Button(game_variant_frame, text="Game 1", command=game1_button_callback)
+    game2_button = tk.Button(game_variant_frame, text="Game 2", command=game2_button_callback)
     game_variants.pack()
     game1_button.pack()
     game2_button.pack()
@@ -115,22 +108,32 @@ def set_the_game():
 
     main_frame.pack()
 
-    confirm_set = tk.Label(root, text="Jeśli jesteś gotowy to zatwierdź ustawienia:")
-    confirm_button = tk.Button(root, text="Zatwierdź", command=confirm_button_callback)
+    confirm_set = tk.Label(root, text="If you're ready, confirm the settings:")
+    confirm_button = tk.Button(root, text="Confirm", command=confirm_button_callback)
     confirm_button.pack(side=tk.BOTTOM)
     confirm_set.pack(side=tk.BOTTOM)
 
-    root.mainloop()  # Uruchomienie pętli głównego okna
+    root.mainloop()  # Start the main window loop
 
     if name_entry.get():
         player_name = name_entry.get()
     else:
         player_name = 'Player'
 
-    return player_name
+    return player_name, game_variant, difficulty_level
 
 
-def prepare_answer(faces: list[tuple[int, int, int, int]], image_answer: np.ndarray):
+def prepare_answer(faces: list[tuple[int, int, int, int]], image_answer: np.ndarray) -> np.ndarray:
+    """
+    Prepares a visual answer based on game results.
+
+    Args:
+        faces (List[Tuple[int, int, int, int]]): List of face bounding box coordinates.
+        image_answer (np.ndarray): Image to modify.
+
+    Returns:
+        np.ndarray: Processed image with answer indication.
+    """
     if len(faces) == 0:
         x, y, w, h = (0, 0, RECT_WIDTH, RECT_HEIGHT)
         answer = cv2.rectangle(image_answer, (x, y), (x + w, y + h), RED, 8)
@@ -142,8 +145,18 @@ def prepare_answer(faces: list[tuple[int, int, int, int]], image_answer: np.ndar
     return ready_answer
 
 
-def show_answers(player_name, answers=None, correct_count=None, incorrect_count=None, total_time = None):
-    # Tworzenie pustego obrazu o kolorze błękitnym
+def show_answers(player_name: str, answers: list[np.ndarray]=None, correct_count: int=None, incorrect_count: int=None, total_time: float= None) -> None:
+    """
+    Displays game results or summary with information on the image.
+
+    Args:
+        player_name (str): Player's name.
+        answers (List[np.ndarray]: List of answers in the form of cropped images. Defaults to None.
+        correct_count (int, optional): Number of correct answers. Defaults to None.
+        incorrect_count (int, optional): Number of incorrect answers. Defaults to None.
+        total_time (float, optional): Total game time. Defaults to None.
+    """
+    # Creating an empty blue-colored image
     main_image = np.zeros((SCREEN_HEIGHT, SCREEN_WIDTH, 3), dtype=np.uint8)
     main_image[:, :] = WHITE
 
@@ -155,29 +168,29 @@ def show_answers(player_name, answers=None, correct_count=None, incorrect_count=
             ready_answer = prepare_answer(face, image_answer)
             answers_to_display.append(ready_answer)
 
-        # Liczba obrazków w rzędzie i kolumnie
+        # Number of images in a row and column
         num_rows = 2
         num_columns = 5
 
-        # Puste miejsce między obrazkami
+        # Space between images
         spacing = 10
 
-        # Sprawdzenie, czy liczba obrazków do wyświetlenia jest zgodna z liczbą komórek
+        # Check if the number of images to display matches the number of cells
         if len(answers_to_display) == num_rows * num_columns:
             for row in range(num_rows):
                 for col in range(num_columns):
-                    # Współrzędne lewego górnego rogu obrazka na obrazie głównym
+                    # Coordinates of the top-left corner of the image on the main image
                     x = 115 + col * (RECT_WIDTH + spacing)
                     y = 180 + row * (RECT_HEIGHT + spacing)
 
-                    # Pobranie obrazka z tablicy 'answers_to_display'
+                    # Get the image from the 'answers_to_display' array
                     image = answers_to_display[row * num_columns + col]
 
-                    # Zmiana rozmiaru obrazka na 250x200 (jeśli jest inny)
+                    # Resize the image to 250x200 (if different)
                     if image.shape[:2] != (RECT_HEIGHT, RECT_WIDTH):
                         image = cv2.resize(image, (RECT_WIDTH, RECT_HEIGHT))
 
-                    # Umieszczenie obrazka na obrazie głównym
+                    # Place the image on the main image
                     main_image[y:y + RECT_HEIGHT, x:x + RECT_WIDTH] = image
 
             text = f"SUMMARY for {player_name}: Correct {correct_count}, Incorrect {incorrect_count}"
@@ -192,31 +205,33 @@ def show_answers(player_name, answers=None, correct_count=None, incorrect_count=
         text = f"SUMMARY for {player_name}: total time: {minutes} min {total_time:.2f} sec."
         cv2.putText(main_image, text, org=(380, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=BLACK, thickness=2)
 
-    # Wyświetlanie obrazu głównego
+    # Display the main image
     cv2.imshow('Results', main_image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
 def main():
-    global game_variant, difficult_level
+    """
+    The main game function.
+    """
     # settings
-    player_name = set_the_game()
+    player_name, game_variant, difficulty_level = set_the_game()
     model = Res10()
     if game_variant == 1:
-        answers, correct_count, incorrect_count = play_1(model, difficult=difficult_level)
-        show_answers(player_name, answers=answers, correct_count=correct_count, incorrect_count=incorrect_count)
+        answers, correct_count, incorrect_count = play_1(model, difficulty=difficulty_level)
         try:
             show_answers(player_name, answers=answers, correct_count=correct_count, incorrect_count=incorrect_count)
         except ValueError:
-            print('Gra została przerwana')
+            print('The game has been interrupted.')
     elif game_variant == 2:
         total_time = play_2(model)
         try:
             show_answers(player_name, total_time=total_time)
         except ValueError:
-            print('Gra została przerwana')
+            print('The game has been interrupted.')
 
 
 if __name__ == '__main__':
     main()
+
